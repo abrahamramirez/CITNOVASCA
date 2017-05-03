@@ -75,7 +75,6 @@ void loop() {
           } 
         }
         url = cmd.substring(from + 1);
-        Serial.print("url: ");  Serial.println(url);
         HTTPClient http;  
         http.begin(url);                          // URL destino para enviar petición GET que retorne JSON  
         int httpCode = http.GET();                // Enviar petición                                                       

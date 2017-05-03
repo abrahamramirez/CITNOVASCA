@@ -17,8 +17,12 @@
 
 const int MOT1_2 = 2;
 const int MOT1_3 = 3;
+const int MOT2_4 = 4;
+const int MOT2_5 = 5;
 const int MOT1_LIM_I = 8;
 const int MOT1_LIM_S = 9;
+const int MOT2_LIM_I = 10;
+const int MOT2_LIM_S = 11;
 
 
 
@@ -60,32 +64,54 @@ void setup() {
   // Motor 1
   pinMode(MOT1_2, OUTPUT);
   pinMode(MOT1_3, OUTPUT);
+  pinMode(MOT2_4, OUTPUT);
+  pinMode(MOT2_5, OUTPUT);
   pinMode(MOT1_LIM_I, INPUT);
   pinMode(MOT1_LIM_S, INPUT);
+  pinMode(MOT2_LIM_I, INPUT);
+  pinMode(MOT2_LIM_S, INPUT);
+
+  
   digitalWrite(MOT1_2, 1);
   digitalWrite(MOT1_3, 1);
 
   //  expand(1);
-  //  contract(1);
+    contract();
 }
 
 char keyInput[6];
 String strKeyInput;
 int loc = 0;
 
-void contract(int motor) {
-  if (motor == 1) {
-//    Serial.println(digitalRead(MOT1_LIM_S));
-    if (digitalRead(MOT1_LIM_S) == 1) {
-      int x = digitalRead(MOT1_LIM_I);
-      while (x != 1) {
-        x = digitalRead(MOT1_LIM_I);
-//        Serial.println(x);
+
+/**
+ * Contrae los motores al mismo tiempo, parando por separado
+ * cada motor.
+ */
+void contract() {
+  int count = 0;
+  if (digitalRead(MOT1_LIM_S) == 0) {
+    int x = digitalRead(MOT1_LIM_I);
+    int y = digitalRead(MOT2_LIM_I);
+    while (true){
+      x = digitalRead(MOT1_LIM_I);
+      y = digitalRead(MOT2_LIM_I);
+      if(x == 0){
         digitalWrite(MOT1_2, 1);
-        digitalWrite(MOT1_3, 0);
+        digitalWrite(MOT1_3, 1);
+        count++;
       }
+      if(y == 0){
+        digitalWrite(MOT2_4, 1);
+        digitalWrite(MOT2_5, 1);
+        count++;
+      }
+      if(count == 2)
+        break;
       digitalWrite(MOT1_2, 1);
-      digitalWrite(MOT1_3, 1);
+      digitalWrite(MOT1_3, 0);
+      digitalWrite(MOT2_4, 1);
+      digitalWrite(MOT2_5, 0);
     }
   }
 }
@@ -141,9 +167,9 @@ void loop() {
                   "  momento       ");
     }
     
-    expand(1);
-    delay(5000);
-    contract(1);
+//    expand();
+//    delay(5000);
+//    contract();
 
     printToLcd("Captura tu clave",
                "                ");
