@@ -19,12 +19,11 @@ const int MOT1_2 = 2;
 const int MOT1_3 = 3;
 const int MOT2_4 = 4;
 const int MOT2_5 = 5;
+
 const int MOT1_LIM_I = 8;
 const int MOT1_LIM_S = 9;
 const int MOT2_LIM_I = 10;
 const int MOT2_LIM_S = 11;
-
-
 
 // RS, E, D4, D5, D6, D7
 LiquidCrystal lcd(A0, A1, A2, A3, A4, A5);
@@ -66,6 +65,7 @@ void setup() {
   pinMode(MOT1_3, OUTPUT);
   pinMode(MOT2_4, OUTPUT);
   pinMode(MOT2_5, OUTPUT);
+  
   pinMode(MOT1_LIM_I, INPUT);
   pinMode(MOT1_LIM_S, INPUT);
   pinMode(MOT2_LIM_I, INPUT);
@@ -74,9 +74,12 @@ void setup() {
   
   digitalWrite(MOT1_2, 1);
   digitalWrite(MOT1_3, 1);
+  digitalWrite(MOT2_4, 1);
+  digitalWrite(MOT2_5, 1);
 
-  //  expand(1);
-    contract();
+  expand();
+//  contract();
+  Serial.println("termino...");
 }
 
 char keyInput[6];
@@ -90,46 +93,86 @@ int loc = 0;
  */
 void contract() {
   int count = 0;
+  boolean ok1 = false;
+  boolean ok2 = false;
   if (digitalRead(MOT1_LIM_S) == 0) {
+//  if (digitalRead(MOT1_LIM_S) == 0 && digitalRead(MOT2_LIM_S) == 0) {
     int x = digitalRead(MOT1_LIM_I);
     int y = digitalRead(MOT2_LIM_I);
     while (true){
+      Serial.println("true");
       x = digitalRead(MOT1_LIM_I);
       y = digitalRead(MOT2_LIM_I);
+      Serial.print("x: "); Serial.print(x);
+      Serial.print("y: "); Serial.print(y);
+      Serial.println();
       if(x == 0){
         digitalWrite(MOT1_2, 1);
         digitalWrite(MOT1_3, 1);
-        count++;
+        ok1 = true;
+        Serial.println("PARAR!!! x = 0");
       }
-      if(y == 0){
-        digitalWrite(MOT2_4, 1);
-        digitalWrite(MOT2_5, 1);
-        count++;
+      else{
+        digitalWrite(MOT1_2, 0);
+        digitalWrite(MOT1_3, 1);
       }
-      if(count == 2)
-        break;
-      digitalWrite(MOT1_2, 1);
-      digitalWrite(MOT1_3, 0);
-      digitalWrite(MOT2_4, 1);
-      digitalWrite(MOT2_5, 0);
+//      if(y == 0){
+//        digitalWrite(MOT2_4, 1);
+//        digitalWrite(MOT2_5, 1);
+//        ok2 = true;
+//        Serial.println("PARAR!!! x = 0");
+//      }
+//      else{
+//        digitalWrite(MOT2_4, 0);
+//        digitalWrite(MOT2_5, 1);
+//      }
+//      if(ok1 && ok2)  break;
+//      if(ok1)  break;
     }
   }
 }
 
 
-void expand(int motor) {
-  if (motor == 1) {
-//    Serial.println(digitalRead(MOT1_LIM_I));
-    if (digitalRead(MOT1_LIM_I) == 1) {
-      int x = digitalRead(MOT1_LIM_S);
-      while (x != 1) {
-        x = digitalRead(MOT1_LIM_S);
-//        Serial.println(x);
-        digitalWrite(MOT1_2, 0);
+void expand() {
+  int count = 0;
+  boolean ok1 = false;
+  boolean ok2 = false;
+  if (digitalRead(MOT1_LIM_I) == 0) {
+//  if (digitalRead(MOT1_LIM_I) == 0 && digitalRead(MOT2_LIM_I) == 0) {
+    int x = digitalRead(MOT1_LIM_S);
+    int y = digitalRead(MOT2_LIM_S);
+    while (true){
+      Serial.println("true");
+      x = digitalRead(MOT1_LIM_S);
+      y = digitalRead(MOT2_LIM_S);
+      Serial.print("x: "); Serial.print(x);
+      Serial.print("y: "); Serial.print(y);
+      Serial.println();
+      if(x == 0){
+        digitalWrite(MOT1_2, 1);
         digitalWrite(MOT1_3, 1);
+        ok1 = true;
+        Serial.println("PARAR!!! x = 0");
       }
-      digitalWrite(MOT1_2, 1);
-      digitalWrite(MOT1_3, 1);
+      else{
+        digitalWrite(MOT1_2, 1);
+        digitalWrite(MOT1_3, 0);
+      }
+//      if(y == 0){
+//        digitalWrite(MOT2_4, 1);
+//        digitalWrite(MOT2_5, 1);
+//        ok2 = true;
+//        Serial.println("PARAR!!! x = 0");
+//      }
+//      else{
+//        digitalWrite(MOT2_4, 1);
+//        digitalWrite(MOT2_5, 0);
+//      }
+//      if(ok1 && ok2)  break;
+      if(ok1)  break;
+      
+     
+      
     }
   }
 }
